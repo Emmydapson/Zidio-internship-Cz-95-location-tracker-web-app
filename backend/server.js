@@ -1,22 +1,33 @@
 const dotenv = require("dotenv");
-dotenv.config({
-  path: "./config.env",
-});
+const express = require('express')
 const mongoose = require("mongoose");
+const app = require("./app");
+const userRoutes = require("./routes/userRoutes");
+
+//Load environment variables from config file 
+dotenv.config({
+    path:"./config.env",
+});
 
 process.on("uncaughtException", (err) => {
-  console.log(err, err.name);
-  console.log("Uncaught exception 💥, Shutting down!");
-  process.exit(1);
-});
+    console.log(err, err.name);
+    console.log("Uncaught exception 💥, Shutting down!");
+    process.exit(1);
+  });
 
-const DB = process.env.DB_CONN_STR;
+  const DB = process.env.DB_CONN_STR;
 mongoose
   .connect(DB)
   .then(() => console.log("Connected to database"))
   .catch((err) => console.error(err));
 
-const app = require("./app");
+  // Middleware to parse JSON request bodies
+app.use(express.json());
+
+// Mount user routes
+app.use("/api/users", userRoutes);
+
+
 const port = process.env.PORT || 3000;
 
 const server = app.listen(port, () => {
@@ -24,9 +35,9 @@ const server = app.listen(port, () => {
 });
 
 process.on("unhandledRejection", (err) => {
-  console.log(err, err.name);
-  console.log("Unhandled rejection 💥, Shutting down!");
-  server.close(() => {
-    process.exit(1);
+    console.log(err, err.name);
+    console.log("Unhandled rejection 💥, Shutting down!");
+    server.close(() => {
+      process.exit(1);
+    });
   });
-});
