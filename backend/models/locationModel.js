@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 
 const locationSchema = new mongoose.Schema({
-  user_Id: {
+  userId: {
     type: mongoose.Schema.Types.ObjectId,
     required: true,
   },
