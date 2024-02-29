@@ -18,7 +18,7 @@ exports.addLocation = async (req, res) => {
     res.status(201).json({ message: "Location added successfully", location });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ message: "Internal server error" });
+    res.status(500).json({ message: err.message || "Internal server error" });
   }
 };
 
